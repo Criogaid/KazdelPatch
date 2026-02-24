@@ -3,7 +3,7 @@ package trackerpatch.mixinplugin;
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +20,10 @@ public final class TrackerPatchEarlyMixins implements IFMLLoadingPlugin, IEarlyM
 
     @Override
     public List<String> getMixins(Set<String> loadedCoreMods) {
-        return Collections.singletonList("entitytracker.MixinEntityTrackerPatch");
+        return Arrays.asList(
+            "entitytracker.MixinEntityTrackerPatch",
+            "world.MixinWorldTileEntityThreadGuard"
+        );
     }
 
     @Override
