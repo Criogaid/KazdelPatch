@@ -2,8 +2,10 @@ package kazdelpatch;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.relauncher.Side;
+import kazdelpatch.command.CommandStopWithReason;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +28,11 @@ public final class TrackerPatchMod {
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(CONTAINER_ACCESS_GUARD);
         LOGGER.info("[KazdelPatch] preInit complete. EntityTracker patch and container access guard are active.");
+    }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandStopWithReason());
     }
 
     @NetworkCheckHandler

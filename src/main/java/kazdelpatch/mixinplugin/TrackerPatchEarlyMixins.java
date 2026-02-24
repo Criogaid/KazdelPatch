@@ -21,6 +21,7 @@ public final class TrackerPatchEarlyMixins implements IFMLLoadingPlugin, IEarlyM
     @Override
     public List<String> getMixins(Set<String> loadedCoreMods) {
         return Arrays.asList(
+            "server.MixinServerConfigurationManagerStopReason",
             "entitytracker.MixinEntityTrackerPatch",
             "world.MixinWorldTileEntityThreadGuard"
         );
