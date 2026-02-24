@@ -15,14 +15,19 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class ContainerAccessGuard {
 
     private static final Logger LOGGER = LogManager.getLogger("TrackerPatch");
     private static final int MAX_REFLECTION_DEPTH = 6;
+    private static final Map<Class<?>, Field[]> RELEVANT_FIELD_CACHE =
+        new ConcurrentHashMap<Class<?>, Field[]>();
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerOpenContainer(PlayerOpenContainerEvent event) {
@@ -105,34 +110,21 @@ public final class ContainerAccessGuard {
             return;
         }
 
-        Class<?> type = current.getClass();
-        while (type != null && type != Object.class) {
-            Field[] fields = type.getDeclaredFields();
-            for (Field field : fields) {
-                if (Modifier.isStatic(field.getModifiers())) {
-                    continue;
-                }
-                Class<?> fieldType = field.getType();
-                if (!IInventory.class.isAssignableFrom(fieldType) && !TileEntity.class.isAssignableFrom(fieldType)) {
-                    continue;
-                }
-                Object value = readFieldValue(field, current);
-                if (value == null) {
-                    continue;
-                }
-                if (value instanceof TileEntity) {
-                    out.add((TileEntity) value);
-                } else {
-                    collectTileEntities(value, visited, out, depth + 1);
-                }
+        for (Field field : getRelevantFields(current.getClass())) {
+            Object value = readFieldValue(field, current);
+            if (value == null) {
+                continue;
             }
-            type = type.getSuperclass();
+            if (value instanceof TileEntity) {
+                out.add((TileEntity) value);
+            } else {
+                collectTileEntities(value, visited, out, depth + 1);
+            }
         }
     }
 
     private static Object readFieldValue(Field field, Object owner) {
         try {
-            field.setAccessible(true);
             return field.get(owner);
         } catch (Throwable ignored) {
             return null;
@@ -148,9 +140,43 @@ public final class ContainerAccessGuard {
         if (world == null) {
             return false;
         }
+        if (!world.blockExists(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord)) {
+            return false;
+        }
 
         TileEntity live = world.getTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
         return live == tileEntity && !live.isInvalid();
+    }
+
+    private static Field[] getRelevantFields(Class<?> rootType) {
+        Field[] cached = RELEVANT_FIELD_CACHE.get(rootType);
+        if (cached != null) {
+            return cached;
+        }
+
+        ArrayList<Field> fields = new ArrayList<Field>();
+        Class<?> type = rootType;
+        while (type != null && type != Object.class) {
+            for (Field field : type.getDeclaredFields()) {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+                Class<?> fieldType = field.getType();
+                if (!IInventory.class.isAssignableFrom(fieldType) && !TileEntity.class.isAssignableFrom(fieldType)) {
+                    continue;
+                }
+                try {
+                    field.setAccessible(true);
+                    fields.add(field);
+                } catch (Throwable ignored) {
+                }
+            }
+            type = type.getSuperclass();
+        }
+
+        Field[] built = fields.toArray(new Field[fields.size()]);
+        Field[] previous = RELEVANT_FIELD_CACHE.putIfAbsent(rootType, built);
+        return previous != null ? previous : built;
     }
 
     private static <T> Set<T> newIdentitySet() {
