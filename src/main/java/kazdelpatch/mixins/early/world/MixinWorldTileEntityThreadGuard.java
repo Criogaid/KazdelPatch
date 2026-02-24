@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import kazdelpatch.runtime.ServerThreadContext;
 
 @Mixin(World.class)
 public abstract class MixinWorldTileEntityThreadGuard {
@@ -24,9 +25,6 @@ public abstract class MixinWorldTileEntityThreadGuard {
     @Shadow
     protected IChunkProvider chunkProvider;
 
-    @Unique
-    private static final String KAZDELPATCH_SERVER_THREAD_NAME = "Server thread";
-
     @Inject(method = "getTileEntity", at = @At("HEAD"), cancellable = true)
     private void kazdelpatch$guardAsyncTileEntityAccess(
         int x,
@@ -37,7 +35,7 @@ public abstract class MixinWorldTileEntityThreadGuard {
         if (this.isRemote || y < 0 || y >= 256) {
             return;
         }
-        if (KAZDELPATCH_SERVER_THREAD_NAME.equals(Thread.currentThread().getName())) {
+        if (ServerThreadContext.isServerThreadCurrent()) {
             return;
         }
 
