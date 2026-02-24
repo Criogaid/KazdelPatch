@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@IFMLLoadingPlugin.Name("TrackerPatchEarlyMixins")
+@IFMLLoadingPlugin.Name("KazdelPatchEarlyMixins")
 @IFMLLoadingPlugin.MCVersion("1.7.10")
 @IFMLLoadingPlugin.TransformerExclusions({"kazdelpatch"})
-public final class TrackerPatchEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoader {
+public final class KazdelPatchEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public String getMixinConfig() {
