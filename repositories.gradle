@@ -1,0 +1,8 @@
+repositories {
+    maven {
+        name = "GTNH Maven"
+        url = "https://nexus.gtnewhorizons.com/repository/public/"
+    }
+    mavenCentral()
+    mavenLocal()
+}

@@ -1,0 +1,18 @@
+[
+{
+  "modid": "trackerpatch",
+  "name": "${modName}",
+  "description": "Runtime patch mod for EntityTracker concurrent modification crash mitigation.",
+  "version": "${modVersion}",
+  "mcversion": "${minecraftVersion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [
+    "Local Patch Build"
+  ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

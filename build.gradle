@@ -1,0 +1,8 @@
+plugins {
+    id 'com.gtnewhorizons.gtnhconvention'
+}
+
+minecraft {
+    injectedTags.put("MOD_ID", project.modId)
+    injectedTags.put("MOD_NAME", project.modName)
+}
