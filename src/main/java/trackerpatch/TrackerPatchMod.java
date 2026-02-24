@@ -4,8 +4,10 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import trackerpatch.guard.ContainerAccessGuard;
 
 import java.util.Map;
 
@@ -18,10 +20,12 @@ import java.util.Map;
 public final class TrackerPatchMod {
 
     private static final Logger LOGGER = LogManager.getLogger("TrackerPatch");
+    private static final ContainerAccessGuard CONTAINER_ACCESS_GUARD = new ContainerAccessGuard();
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        LOGGER.info("[TrackerPatch] preInit complete. EntityTracker runtime patch is active.");
+        MinecraftForge.EVENT_BUS.register(CONTAINER_ACCESS_GUARD);
+        LOGGER.info("[TrackerPatch] preInit complete. EntityTracker patch and container access guard are active.");
     }
 
     @NetworkCheckHandler
