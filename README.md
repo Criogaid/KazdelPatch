@@ -20,7 +20,7 @@ Windows:
 .\gradlew.bat build
 ```
 
-产物路径：`build/libs/trackerpatch-<version>.jar`
+产物路径：`build/libs/kazdelpatch-<version>.jar`
 
 ## 服务器使用（修复版）
 

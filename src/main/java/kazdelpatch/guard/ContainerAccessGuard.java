@@ -1,4 +1,4 @@
-package trackerpatch.guard;
+package kazdelpatch.guard;
 
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class ContainerAccessGuard {
 
-    private static final Logger LOGGER = LogManager.getLogger("TrackerPatch");
+    private static final Logger LOGGER = LogManager.getLogger("KazdelPatch");
     private static final int MAX_REFLECTION_DEPTH = 6;
     private static final Map<Class<?>, Field[]> RELEVANT_FIELD_CACHE =
         new ConcurrentHashMap<Class<?>, Field[]>();
@@ -52,7 +52,7 @@ public final class ContainerAccessGuard {
         event.setResult(Event.Result.DENY);
         event.entityPlayer.closeScreen();
         LOGGER.warn(
-            "[TrackerPatch] Closed force-allowed container {} for player {} because backend inventory became invalid.",
+            "[KazdelPatch] Closed force-allowed container {} for player {} because backend inventory became invalid.",
             container.getClass().getName(),
             event.entityPlayer.getCommandSenderName()
         );

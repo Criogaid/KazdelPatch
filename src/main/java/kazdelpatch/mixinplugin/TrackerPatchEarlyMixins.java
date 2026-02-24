@@ -1,4 +1,4 @@
-package trackerpatch.mixinplugin;
+package kazdelpatch.mixinplugin;
 
 import com.gtnewhorizon.gtnhmixins.IEarlyMixinLoader;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
@@ -10,12 +10,12 @@ import java.util.Set;
 
 @IFMLLoadingPlugin.Name("TrackerPatchEarlyMixins")
 @IFMLLoadingPlugin.MCVersion("1.7.10")
-@IFMLLoadingPlugin.TransformerExclusions({"trackerpatch"})
+@IFMLLoadingPlugin.TransformerExclusions({"kazdelpatch"})
 public final class TrackerPatchEarlyMixins implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public String getMixinConfig() {
-        return "mixins.trackerpatch.early.json";
+        return "mixins.kazdelpatch.early.json";
     }
 
     @Override

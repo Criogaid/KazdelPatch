@@ -1,4 +1,4 @@
-package trackerpatch.mixins.early.world;
+package kazdelpatch.mixins.early.world;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -25,10 +25,10 @@ public abstract class MixinWorldTileEntityThreadGuard {
     protected IChunkProvider chunkProvider;
 
     @Unique
-    private static final String TRACKERPATCH_SERVER_THREAD_NAME = "Server thread";
+    private static final String KAZDELPATCH_SERVER_THREAD_NAME = "Server thread";
 
     @Inject(method = "getTileEntity", at = @At("HEAD"), cancellable = true)
-    private void trackerpatch$guardAsyncTileEntityAccess(
+    private void kazdelpatch$guardAsyncTileEntityAccess(
         int x,
         int y,
         int z,
@@ -37,13 +37,13 @@ public abstract class MixinWorldTileEntityThreadGuard {
         if (this.isRemote || y < 0 || y >= 256) {
             return;
         }
-        if (TRACKERPATCH_SERVER_THREAD_NAME.equals(Thread.currentThread().getName())) {
+        if (KAZDELPATCH_SERVER_THREAD_NAME.equals(Thread.currentThread().getName())) {
             return;
         }
 
         int chunkX = x >> 4;
         int chunkZ = z >> 4;
-        Chunk chunk = this.trackerpatch$getLoadedChunk(chunkX, chunkZ);
+        Chunk chunk = this.kazdelpatch$getLoadedChunk(chunkX, chunkZ);
         if (chunk == null) {
             cir.setReturnValue(null);
             return;
@@ -53,7 +53,7 @@ public abstract class MixinWorldTileEntityThreadGuard {
     }
 
     @Unique
-    private Chunk trackerpatch$getLoadedChunk(int chunkX, int chunkZ) {
+    private Chunk kazdelpatch$getLoadedChunk(int chunkX, int chunkZ) {
         IChunkProvider provider = this.chunkProvider;
         if (!(provider instanceof ChunkProviderServer)) {
             return null;

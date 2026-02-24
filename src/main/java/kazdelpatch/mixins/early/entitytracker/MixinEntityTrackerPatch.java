@@ -1,4 +1,4 @@
-package trackerpatch.mixins.early.entitytracker;
+package kazdelpatch.mixins.early.entitytracker;
 
 import net.minecraft.entity.EntityTracker;
 import net.minecraft.entity.EntityTrackerEntry;
@@ -39,11 +39,11 @@ public abstract class MixinEntityTrackerPatch {
     private WorldServer theWorld;
 
     @Unique
-    private static final Logger TRACKER_PATCH_LOGGER = LogManager.getLogger("TrackerPatch");
+    private static final Logger TRACKER_PATCH_LOGGER = LogManager.getLogger("KazdelPatch");
 
     @Inject(method = "<init>", at = @At("TAIL"))
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void trackerpatch$replaceTrackedSet(WorldServer world, CallbackInfo ci) {
+    private void kazdelpatch$replaceTrackedSet(WorldServer world, CallbackInfo ci) {
         Set<EntityTrackerEntry> replacement = Collections.newSetFromMap(
             new ConcurrentHashMap<EntityTrackerEntry, Boolean>());
         int copied = 0;
@@ -55,13 +55,13 @@ public abstract class MixinEntityTrackerPatch {
         }
         this.trackedEntities = (Set) replacement;
         TRACKER_PATCH_LOGGER.info(
-            "[TrackerPatch] EntityTracker.trackedEntities swapped to concurrent set (copied={}).",
+            "[KazdelPatch] EntityTracker.trackedEntities swapped to concurrent set (copied={}).",
             Integer.valueOf(copied));
     }
 
     @Inject(method = "updateTrackedEntities", at = @At("HEAD"), cancellable = true)
-    private void trackerpatch$patchUpdateTrackedEntities(CallbackInfo ci) {
-        List<EntityTrackerEntry> snapshot = this.trackerpatch$snapshotEntries();
+    private void kazdelpatch$patchUpdateTrackedEntities(CallbackInfo ci) {
+        List<EntityTrackerEntry> snapshot = this.kazdelpatch$snapshotEntries();
         ArrayList<EntityPlayerMP> playersToRefresh = new ArrayList<EntityPlayerMP>(snapshot.size());
 
         for (EntityTrackerEntry entitytrackerentry : snapshot) {
@@ -86,8 +86,8 @@ public abstract class MixinEntityTrackerPatch {
     }
 
     @Inject(method = "func_85172_a(Lnet/minecraft/entity/player/EntityPlayerMP;Lnet/minecraft/world/chunk/Chunk;)V", at = @At("HEAD"), cancellable = true)
-    private void trackerpatch$patchChunkWatch(EntityPlayerMP player, Chunk chunk, CallbackInfo ci) {
-        List<EntityTrackerEntry> snapshot = this.trackerpatch$snapshotEntries();
+    private void kazdelpatch$patchChunkWatch(EntityPlayerMP player, Chunk chunk, CallbackInfo ci) {
+        List<EntityTrackerEntry> snapshot = this.kazdelpatch$snapshotEntries();
         for (EntityTrackerEntry entitytrackerentry : snapshot) {
             if (entitytrackerentry != null
                 && entitytrackerentry.myEntity != player
@@ -100,10 +100,10 @@ public abstract class MixinEntityTrackerPatch {
     }
 
     @Inject(method = "removeEntityFromAllTrackingPlayers", at = @At("HEAD"), cancellable = true)
-    private void trackerpatch$patchRemoveEntityFromAllTrackingPlayers(Entity entity, CallbackInfo ci) {
+    private void kazdelpatch$patchRemoveEntityFromAllTrackingPlayers(Entity entity, CallbackInfo ci) {
         if (entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;
-            List<EntityTrackerEntry> snapshot = this.trackerpatch$snapshotEntries();
+            List<EntityTrackerEntry> snapshot = this.kazdelpatch$snapshotEntries();
             for (EntityTrackerEntry entitytrackerentry : snapshot) {
                 if (entitytrackerentry != null) {
                     entitytrackerentry.removeFromWatchingList(player);
@@ -120,8 +120,8 @@ public abstract class MixinEntityTrackerPatch {
     }
 
     @Inject(method = "removePlayerFromTrackers", at = @At("HEAD"), cancellable = true)
-    private void trackerpatch$patchRemovePlayerFromTrackers(EntityPlayerMP player, CallbackInfo ci) {
-        List<EntityTrackerEntry> snapshot = this.trackerpatch$snapshotEntries();
+    private void kazdelpatch$patchRemovePlayerFromTrackers(EntityPlayerMP player, CallbackInfo ci) {
+        List<EntityTrackerEntry> snapshot = this.kazdelpatch$snapshotEntries();
         for (EntityTrackerEntry entitytrackerentry : snapshot) {
             if (entitytrackerentry != null) {
                 entitytrackerentry.removePlayerFromTracker(player);
@@ -132,7 +132,7 @@ public abstract class MixinEntityTrackerPatch {
 
     @Unique
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private List<EntityTrackerEntry> trackerpatch$snapshotEntries() {
+    private List<EntityTrackerEntry> kazdelpatch$snapshotEntries() {
         for (int attempt = 0; attempt < 5; attempt++) {
             try {
                 return new ArrayList<EntityTrackerEntry>((Collection<EntityTrackerEntry>) (Collection) this.trackedEntities);
@@ -141,7 +141,7 @@ public abstract class MixinEntityTrackerPatch {
             }
         }
         TRACKER_PATCH_LOGGER.warn(
-            "[TrackerPatch] Failed to snapshot trackedEntities after retries; returning empty snapshot.");
+            "[KazdelPatch] Failed to snapshot trackedEntities after retries; returning empty snapshot.");
         return Collections.emptyList();
     }
 }

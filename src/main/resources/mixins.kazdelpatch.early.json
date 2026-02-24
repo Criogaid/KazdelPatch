@@ -1,8 +1,8 @@
 {
   "required": true,
   "minVersion": "0.7.11",
-  "package": "trackerpatch.mixins",
-  "refmap": "mixins.trackerpatch.refmap.json",
+  "package": "kazdelpatch.mixins.early",
+  "refmap": "mixins.kazdelpatch.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
   "overwrites": {

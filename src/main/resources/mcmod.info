@@ -1,6 +1,6 @@
 [
 {
-  "modid": "trackerpatch",
+  "modid": "${modId}",
   "name": "${modName}",
   "description": "Runtime patch mod for EntityTracker concurrent modification crash mitigation.",
   "version": "${modVersion}",
