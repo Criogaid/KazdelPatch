@@ -2,13 +2,13 @@
 {
   "modid": "${modId}",
   "name": "${modName}",
-  "description": "Runtime patch mod for EntityTracker concurrent modification crash mitigation.",
+  "description": "Server runtime patch mod for GTNH: entity tracker stability fixes, dispenser stack sanitization, container guard, stop reason support and /hat command.",
   "version": "${modVersion}",
   "mcversion": "${minecraftVersion}",
   "url": "",
   "updateUrl": "",
   "authorList": [
-    "Local Patch Build"
+    "Criogaid"
   ],
   "credits": "",
   "logoFile": "",

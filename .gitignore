@@ -8,6 +8,9 @@ logs/
 .idea/
 *.iml
 .vscode/
+.serena/
+.tmp/
+.zcf/
 
 .DS_Store
 Thumbs.db

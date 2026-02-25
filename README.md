@@ -1,14 +1,27 @@
-# EntityTracker 运行时修复补丁（1.7.10 / GTNH）
+# KazdelPatch（Minecraft 1.7.10 / GTNH）
 
-这个项目用于将 `EntityTracker` 并发修改问题做成独立可装载 mod（与调试 mod 分离）。
+`KazdelPatch` 是一个面向 GTNH 服务端场景的运行时补丁模组，目标是以最小侵入方式修复已知崩溃点和可利用漏洞。
 
-## 功能
+作者：`Criogaid`
 
-- 在 `EntityTracker` 构造后，将 `trackedEntities` 替换为 `ConcurrentHashMap` 支撑的并发 Set。
-- 覆盖 `func_72788_a` 和 `func_85172_a` 的遍历路径，改为快照遍历，降低 `ConcurrentModificationException` 风险。
-- 保持仅服务端必装（客户端可不装）。
+## 当前功能
+
+- `EntityTracker` 并发访问缓解：将关键遍历路径改为快照遍历，降低并发修改导致的崩溃风险。
+- 异步线程访问 TileEntity 保护：对非主线程访问世界方块实体做防护。
+- 容器后端失效保护：检测容器后端无效时主动关闭，避免异常状态传播。
+- 发射器堆叠净化：清理 `stackSize <= 0` 或无效物品堆叠，阻断 0/-1 触发的刷物链路。
+- `/stop` 扩展：支持附加关服原因，并在异常情况下兜底回退到 vanilla stop。
+- `/hat` 命令：将手持物与头盔槽快速互换（最简静默实现）。
+
+## 环境与兼容
+
+- Minecraft: `1.7.10`
+- Forge: `10.13.4.1614`
+- 主要目标：`GT New Horizons` 服务端
 
 ## 构建
+
+Linux/macOS:
 
 ```bash
 ./gradlew build
@@ -20,16 +33,17 @@ Windows:
 .\gradlew.bat build
 ```
 
-产物路径：`build/libs/kazdelpatch-<version>.jar`
+产物默认位于：`build/libs/kazdelpatch-<version>.jar`
 
-## 服务器使用（修复版）
+## 部署
 
-1. 停服。
-2. 将 jar 放入服务器 `mods/`。
-3. 开服复现原先易崩场景（登录/传送/高频实体更新）。
-4. 观察是否不再出现 `EntityTracker.func_72788_a` / `func_85172_a` 的并发修改崩溃。
+1. 关闭服务器。
+2. 将构建产物放入服务器 `mods/` 目录。
+3. 启动服务器并确认日志无 mixin 注入失败。
+4. 按需验证功能（例如发射器 0/负数堆叠场景、`/stop`、`/hat`）。
 
-## 注意
+## 公开仓库建议
 
-- 这是“缓解型运行时补丁”，不是上游源码永久修复。
-- 建议与原 `tracker-debug-mod` 二选一装载，避免排查阶段日志噪声过大。
+- 通过 `.gitignore` 排除本地工具目录、构建目录和 IDE 文件。
+- 通过 `.gitattributes` 统一行尾规则，减少跨平台差异。
+- 发布前执行一次 `./gradlew.bat build`，并确认 `logs/`、`run/`、`build/` 无需提交文件。
