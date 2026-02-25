@@ -5,6 +5,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.relauncher.Side;
+import kazdelpatch.command.CommandHat;
 import kazdelpatch.command.CommandStopWithReason;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +33,7 @@ public final class TrackerPatchMod {
 
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandHat());
         event.registerServerCommand(new CommandStopWithReason());
     }
 
