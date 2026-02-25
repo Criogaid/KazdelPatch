@@ -1,9 +1,10 @@
 #!/bin/sh
 commit_msg_file="$1"
-pattern='^fix\([^)[:space:]]+\)：.+'
+pattern='^(feat|fix|refactor|chore|docs|test)\([^)[:space:]]+\)：.+'
 
 if ! grep -Eq "$pattern" "$commit_msg_file"; then
-  echo "提交信息格式错误：必须为 fix(xx)：中文message" >&2
-  echo "示例：fix(tracker)：修复实体追踪崩溃" >&2
+  echo "提交信息格式错误：必须为 type(xx)：中文message" >&2
+  echo "type 允许：feat|fix|refactor|chore|docs|test" >&2
+  echo "示例：feat(hat)：新增最简hat指令" >&2
   exit 1
 fi
