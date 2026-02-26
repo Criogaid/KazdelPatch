@@ -38,6 +38,40 @@ public abstract class MixinTileEntityDispenserStackGuard {
         this.kazdelpatch$sanitizeAllSlots();
     }
 
+    @Inject(method = "getStackInSlot", at = @At("HEAD"), cancellable = true)
+    private void kazdelpatch$sanitizeBeforeGet(int slot, CallbackInfoReturnable<ItemStack> cir) {
+        if (slot < 0 || slot >= this.field_146022_i.length) {
+            return;
+        }
+
+        ItemStack stack = this.field_146022_i[slot];
+        if (!this.kazdelpatch$isInvalidStack(stack)) {
+            return;
+        }
+
+        this.kazdelpatch$logAndClear(slot, stack);
+        this.field_146022_i[slot] = null;
+        ((TileEntity) (Object) this).markDirty();
+        cir.setReturnValue(null);
+    }
+
+    @Inject(method = "decrStackSize", at = @At("HEAD"), cancellable = true)
+    private void kazdelpatch$sanitizeBeforeDecr(int slot, int count, CallbackInfoReturnable<ItemStack> cir) {
+        if (slot < 0 || slot >= this.field_146022_i.length) {
+            return;
+        }
+
+        ItemStack stack = this.field_146022_i[slot];
+        if (!this.kazdelpatch$isInvalidStack(stack)) {
+            return;
+        }
+
+        this.kazdelpatch$logAndClear(slot, stack);
+        this.field_146022_i[slot] = null;
+        ((TileEntity) (Object) this).markDirty();
+        cir.setReturnValue(null);
+    }
+
     @Unique
     private void kazdelpatch$sanitizeAllSlots() {
         boolean changed = false;
