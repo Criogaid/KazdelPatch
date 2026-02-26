@@ -25,7 +25,8 @@ public final class KazdelPatchEarlyMixins implements IFMLLoadingPlugin, IEarlyMi
             "server.MixinServerConfigurationManagerStopReason",
             "entitytracker.MixinEntityTrackerPatch",
             "world.MixinWorldTileEntityThreadGuard",
-            "dispenser.MixinTileEntityDispenserStackGuard"
+            "dispenser.MixinTileEntityDispenserStackGuard",
+            "inventory.MixinContainerStackSanitizer"
         );
     }
 
